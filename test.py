@@ -1,5 +1,5 @@
-a = 1
-b = a
-a = 2
+from Figure import MyFunction
 
-print(b, a)
+myf = MyFunction(a=4, v=0.5, ga=0.2, el=0.1, a0=2, b=2)
+
+print(myf.get_points())

@@ -1,17 +1,5 @@
-import numpy as np
 from collections import defaultdict
-
-from matplotlib import pyplot as plt
-
 from Figure import MyFunction
-
-
-def incorrect_xi(x1, x0) -> bool:
-    if x1 is None:
-        # print(f"xi = {x1} вышел за границы")
-        # print(f"xi-1 = {x0}")
-        return True
-    return False
 
 
 def check_cycles(list: list) -> int:
@@ -27,47 +15,83 @@ def is_cycle(list: list, cycle_type: int) -> bool:
     return False
 
 
-def regime_map(my_func, a0_range, b_range, iterations, x_start):
-    points: dict[int:list] = defaultdict(lambda: [])
+def f4(b):
+    return b * 1.16583 + 0.078616
 
-    zero_values = ""
 
-    for a0 in a0_range:
+def f5(b):
+    return b * (117 / 101) - (4691 / 101000)
+
+
+def f13_down(b):
+    return b * 1.15625 - 0.16271875
+
+
+def f13_up(b):
+    return b * (21 / 17) - 517 / 3400
+
+
+def f9_up(b):
+    return b * (435 / 374) + 3167 / 374000
+
+
+def find_cycles(my_func, a0, b, x0, points) -> int:
+    for _ in range(iterations):
+        x1 = my_func.f_with_param(x0)
+        if x1 is None:
+            print(x1, a0, b)
+            break
+        x0 = x1
+
+    a0_b_vals = []
+    for _ in range(15 + 1):
+        x1 = my_func.f_with_param(x0)
+
+        if x1 is None:
+            print(x1, a0, b)
+            break
+
+        a0_b_vals.append(x1)
+        x0 = x1
+
+    cycle_type = check_cycles(a0_b_vals)
+    if cycle_type != -1:
+        points[cycle_type].append([a0, b])
+
+    return x0
+
+
+def iter_a0(my_func, b, x_start, points, func_xy):
+    a0 = func_xy(b)  # идем по функции
+    a0_start = a0
+    my_func.set_b(b)
+    x0 = x_start
+
+    while a0 < 4:
         my_func.set_a0(a0)
-        flag = False
-        for b in b_range:
-            x0 = x_start
+        x0 = find_cycles(my_func, a0, b, x0, points)
+        a0 += 0.001
 
-            my_func.set_b(b)
-            for _ in range(iterations):  # итерационный процессы
-                x1 = my_func.f_with_param(x0)
-                if incorrect_xi(x1, x0):
-                    flag = True
-                    print(x1, a0, b)
-                    break
-                x0 = x1
-            # if flag:
-            #     continue
+    a0 = a0_start
+    x0 = x_start
+    while a0 > 3:
+        my_func.set_a0(a0)
+        x0 = find_cycles(my_func, a0, b, x0, points)
+        a0 -= 0.001
 
-            a0_b_vals = []
-            for _ in range(15 + 1):
-                x1 = my_func.f_with_param(x0)
-                if incorrect_xi(x1, x0):
-                    print(x1, a0, b)
-                    break
-                a0_b_vals.append (x1)
 
-                x0 = x1
+def regime_map(my_func, b_start, x_start, func_xy):
+    points: dict[int:list] = defaultdict(lambda: [])
+    b = b_start
 
-            cycle_type = check_cycles(a0_b_vals)
-            if abs(a0 - 3.5) < 0.001 and abs(b - 2.9) < 0.001:
-                print(cycle_type, a0, b)
-                print(a0_b_vals)
-            if cycle_type != -1:
-                if a0_b_vals[0] == 0.0:
-                    zero_values += f"{b} {a0}\n"
-                else:
-                    points[cycle_type].append([a0, b])
+    while b < 3:
+        iter_a0(my_func=my_func, b=b, x_start=x_start, points=points, func_xy=func_xy)
+        b += 0.001
+
+    b = b_start
+    while b > 2.4:
+        iter_a0(my_func=my_func, b=b, x_start=x_start, points=points, func_xy=func_xy)
+        b -= 0.001
 
     equilibrium = open("D:\\eqX2Gt2X1.txt", 'w')
     equilibrium0 = open("D:\\eqX2Lt2X1.txt", 'w')
@@ -85,25 +109,6 @@ def regime_map(my_func, a0_range, b_range, iterations, x_start):
     cycle_13 = open('D:\\cycle13.txt', 'w')
     cycle_14 = open('D:\\cycle14.txt', 'w')
     cycle_15 = open('D:\\cycle15.txt', 'w')
-
-    equilibrium0.write(zero_values)
-    # print(points[4])
-    a0_v = []
-    b_v = []
-
-    for point in points[4]:
-        a0_v.append(point[0])
-        b_v.append(point[1])
-
-    plt.scatter(b_v, a0_v, label=f'x0={0.3}', color='red', linewidths=0.01, marker=".")
-
-    plt.legend()
-    plt.grid(True)
-    plt.xlim([0, 3])
-    plt.ylim([0, 4])
-    plt.xlabel('b')
-    plt.ylabel('a0')
-    plt.show()
 
     for cycle_type in range(1, 16):
         line = ""
@@ -161,27 +166,29 @@ def regime_map(my_func, a0_range, b_range, iterations, x_start):
     cycle_15.close()
 
 
-a0 = 3.4
-b = 2.8
-myf = MyFunction(a=4, v=0.5, ga=0.2, el=0.1, a0=a0, b=b)
-step = 0.001
-a0_range = np.arange(a0, 4 + step, step)
-b_range = np.arange(b, 3 + step, step)
+# f4
+b_start = 2.55
+func_xy = f4
 
-x00 = 0.3
-iterations = 100
+# f5
+# b_start = 2.701
+# func_xy = f5
 
-# x_start = 0.2
-# x0 = x_start
-# a_range = np.arange(0.01, 2, 0.01)
-# b_range = np.arange(0.01, 0.6, 0.01)
-# time_range = range(1, 10000 + 1)
+# f13_down
+# b_start = 2.801
+# func_xy = f13_down
 
-regime_map(myf, a0_range, b_range, iterations, x_start=x00)
+# f13_up
 
-# a=4, v=0.5, ga=0.2, el=0.1, a0=a0, b=b)
-# 0 <= p<= 0.3
-# 0.3 <= p <= 0.4
-# 0.4 <= p <= 0.6
-# 0.6 <= p <= 0.7
-# 0.7 <= p <= 1
+# b_start = 2.593
+# func_xy = f13_up
+
+#f9_up
+# b_start = 2.74
+# func_xy = f9_up
+
+myf = MyFunction(a=4, v=0.5, ga=0.2, el=0.1, a0=func_xy(b_start), b=b_start)
+p0 = 0.4
+iterations = 10000
+
+regime_map(myf, b_start, x_start=p0, func_xy=func_xy)

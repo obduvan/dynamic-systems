@@ -35,6 +35,29 @@ class MyFunction:
     def f5(self, p):
         return (1 - self.ar + self.br) * p - self.a0 * self.ga + self.ar * self.v + self.ar * self.ga - self.br * self.v
 
+    def get_points(self):
+        p1 = self.range_p1
+
+        f1 = [self.f1(i) for i in p1]
+
+        p2 = self.range_p2
+        f2 = [self.f2(i) for i in p2]
+
+        p3 = self.range_p3
+        f3 = [self.f3(i) for i in p3]
+
+        p4 = self.range_p4
+        f4 = [self.f4(i) for i in p4]
+
+        p5 = self.range_p5
+        f5 = [self.f5(i) for i in p5]
+
+        p_vals = list(p1) + list(p2) + list(p3) + list(p4) + list(p5)
+        f_vals = f1 + f2 + f3 + f4 + f5
+
+        return p_vals, f_vals
+
+
     def draw_f1(self, show=False):
         p = self.range_p1
         f = [self.f1(i) for i in p]
@@ -105,7 +128,7 @@ class MyFunction:
         plt.grid(True)
         plt.xlim([0, 1])
         plt.ylim([0, 1])
-        # plt.title(title)
+        plt.title(title)
         plt.xlabel('p')
         plt.ylabel('f(p)')
         if show:
