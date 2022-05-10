@@ -6,6 +6,7 @@ from matplotlib import pyplot as plt
 from Figure import MyFunction
 
 
+
 def compare(x_range, iterations, a0, b, func):
     points: dict[int:list] = defaultdict(lambda: [])
     for x in x_range:
@@ -122,22 +123,22 @@ def compare_cycles(x_range, iterations, a0, b, func):
                 break
             x0 = x1
         x0 = round(x0, 5)
-        s = 0.002
+        s = x_start
         if x0 in x_values_9:
             x_9[0].append(x_start)
-            x_9[1].append(s + 0.02)
+            x_9[1].append(x_start)
 
         elif x0 in x_values_9_1:
             x_9_1[0].append(x_start)
-            x_9_1[1].append(s + 0.04)
+            x_9_1[1].append(x_start)
 
         elif x0 in x_values_4:
             x_4[0].append(x_start)
-            x_4[1].append(s + 0.05)
+            x_4[1].append(x_start)
 
         elif x0 in x_values_eq:
             x_eq[0].append(x_start)
-            x_eq[1].append(s + 0.06)
+            x_eq[1].append(x_start)
         else:
             print(x0, "  ??")
 

@@ -34,8 +34,8 @@ def draw_lamerey(func: MyFunction, x0, show=False, label=""):
 
 """Построение с конкретными параметрами: """
 
-# myf = MyFunction(a=4, v=0.5, ga=0.2, el=0.1, a0=3.35, b=2.8)
-myf = MyFunction(a=2.5, v=0.5, ga=0.2, el=0.1, a0=3, b=2.25)
+myf = MyFunction(a=4, v=0.5, ga=0.2, el=0.1, a0=3.35, b=2.8)
+# myf = MyFunction(a=4, v=0.5, ga=0.2, el=0.1, a0=1.4, b=2.9)
 draw_lamerey(myf, show=True, x0=0.3)
 myf.draw_function()
 

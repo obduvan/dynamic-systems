@@ -35,13 +35,18 @@ def f9_up(b):
     return b * (435 / 374) + 3167 / 374000
 
 
-def find_cycles(my_func, a0, b, x0, points) -> int:
+def f9_up_1(b):
+    return b * (35479 / 29300) + 3409031 / 29300000
+
+
+def find_cycles(my_func, a0, b, x0, points):
     for _ in range(iterations):
         x1 = my_func.f_with_param(x0)
         if x1 is None:
             print(x1, a0, b)
             break
         x0 = x1
+    x_iter = x0
 
     a0_b_vals = []
     for _ in range(15 + 1):
@@ -58,7 +63,7 @@ def find_cycles(my_func, a0, b, x0, points) -> int:
     if cycle_type != -1:
         points[cycle_type].append([a0, b])
 
-    return x0
+    return x0, x_iter
 
 
 def iter_a0(my_func, b, x_start, points, func_xy):
@@ -67,30 +72,43 @@ def iter_a0(my_func, b, x_start, points, func_xy):
     my_func.set_b(b)
     x0 = x_start
 
+    x_iter_next = x0
+
+    flag = True
+
     while a0 < 4:
         my_func.set_a0(a0)
-        x0 = find_cycles(my_func, a0, b, x0, points)
+        x0, x_iter = find_cycles(my_func, a0, b, x0, points)
+        if flag:
+            x_iter_next = x_iter
+        flag = False
         a0 += 0.001
 
     a0 = a0_start
     x0 = x_start
     while a0 > 3:
         my_func.set_a0(a0)
-        x0 = find_cycles(my_func, a0, b, x0, points)
+        x0, trash = find_cycles(my_func, a0, b, x0, points)
         a0 -= 0.001
+
+    return x_iter_next
 
 
 def regime_map(my_func, b_start, x_start, func_xy):
     points: dict[int:list] = defaultdict(lambda: [])
     b = b_start
-
+    flag = True
+    x_iter_new = x_start
     while b < 3:
-        iter_a0(my_func=my_func, b=b, x_start=x_start, points=points, func_xy=func_xy)
+        x_iter = iter_a0(my_func=my_func, b=b, x_start=x_iter_new, points=points, func_xy=func_xy)
         b += 0.001
+        x_iter_new = x_iter
 
     b = b_start
+    x_iter_new = x_start
     while b > 2.4:
-        iter_a0(my_func=my_func, b=b, x_start=x_start, points=points, func_xy=func_xy)
+        x_iter1 = iter_a0(my_func=my_func, b=b, x_start=x_iter_new, points=points, func_xy=func_xy)
+        x_iter_new = x_iter1
         b -= 0.001
 
     equilibrium = open("D:\\eqX2Gt2X1.txt", 'w')
@@ -167,8 +185,8 @@ def regime_map(my_func, b_start, x_start, func_xy):
 
 
 # f4
-b_start = 2.55
-func_xy = f4
+# b_start = 2.55
+# func_xy = f4
 
 # f5
 # b_start = 2.701
@@ -183,12 +201,12 @@ func_xy = f4
 # b_start = 2.593
 # func_xy = f13_up
 
-#f9_up
-# b_start = 2.74
-# func_xy = f9_up
+# f9_up
+b_start = 2.7
+func_xy = f9_up
 
 myf = MyFunction(a=4, v=0.5, ga=0.2, el=0.1, a0=func_xy(b_start), b=b_start)
 p0 = 0.4
-iterations = 10000
+iterations = 200
 
 regime_map(myf, b_start, x_start=p0, func_xy=func_xy)
