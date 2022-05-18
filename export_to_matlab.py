@@ -1,4 +1,4 @@
-def export_bif(list_1, lis_2, file_name, folder):
+def export_two_arr(list_1, lis_2, file_name, folder):
     main_path = f"D:\\DEVELOP PROJECTS\\В рамках предмета в универе\\dynamic-systems\\{folder}\\"
 
     line = ""

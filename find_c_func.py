@@ -1,7 +1,7 @@
 from matplotlib import pyplot as plt
 
 from Figure import MyFunction
-from export_to_matlab import export_bif
+from export_to_matlab import export_two_arr
 
 
 def c1(func: MyFunction):
@@ -18,6 +18,14 @@ def c3(f: MyFunction):
 
 def c4(f: MyFunction):
     return f.v + f.ga
+
+
+def left_central(f: MyFunction):
+    return f.v - f.el + 0.00001
+
+
+def right_central(f: MyFunction):
+    return f.v + f.el - 0.00001
 
 
 def find_c(func: MyFunction, b, b_max, func_c, label):
@@ -37,8 +45,8 @@ def find_c(func: MyFunction, b, b_max, func_c, label):
         b += 0.001
         func.set_b(b)
 
-    export_bif(res_b_c, res_p_c, f"{label}", folder="c_function")
-    export_bif(res_b_fc, res_p_fc, f"f({label})", folder="c_function")
+    export_two_arr(res_b_c, res_p_c, f"{label}", folder="c_function")
+    export_two_arr(res_b_fc, res_p_fc, f"f({label})", folder="c_function")
     plt.scatter(res_b_c, res_p_c, label=f"{label}", color='green', linewidths=0.01, marker=".")
     plt.scatter(res_b_fc, res_p_fc, label=f"f({label})", color='green', linewidths=0.01, marker=".")
 
@@ -50,7 +58,8 @@ label_param = "b"
 
 myf = MyFunction(a=4, v=0.5, ga=0.2, el=0.1, a0=a0, b=b)
 
-find_c(func_c=c4, b=b, b_max=b_max, func=myf, label="c4")
+
+find_c(func_c=right_central, b=b, b_max=b_max, func=myf, label="right_central")
 
 plt.legend()
 plt.grid(True)

@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 from Figure import MyFunction
 from analys_cycles import check_cycles
-from export_to_matlab import export_bif
+from export_to_matlab import export_two_arr
 
 
 def check_9(func, x0, b):
@@ -131,7 +131,7 @@ myf = MyFunction(a=4, v=0.5, ga=0.2, el=0.1, a0=a0, b=b_min)
 res_b, res_x0 = bifurcation_b(func=myf, x0=x0, b_max=b_max, b=b_min)
 
 plt.scatter(res_b, res_x0, label=f"x0={x0}", color='green', linewidths=0.01, marker=".")
-export_bif(res_b, res_x0, file_name=f"bif_by_{label_param}_{x0}", folder="bif")
+export_two_arr(res_b, res_x0, file_name=f"bif_by_{label_param}_{x0}", folder="bif")
 
 
 x0 = 0.7
@@ -144,7 +144,7 @@ myf = MyFunction(a=4, v=0.5, ga=0.2, el=0.1, a0=a0, b=b_min)
 res_b, res_x0 = bifurcation_b(func=myf, x0=x0, b_max=b_max, b=b_min)
 
 plt.scatter(res_b, res_x0, label=f'x0={x0}', color='red', linewidths=0.01, marker=".")
-export_bif(res_b, res_x0, file_name=f"bif_by_{label_param}_{x0}", folder="bif")
+export_two_arr(res_b, res_x0, file_name=f"bif_by_{label_param}_{x0}", folder="bif")
 
 
 plt.legend()

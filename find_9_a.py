@@ -1,5 +1,5 @@
 from Figure import MyFunction
-from export_to_matlab import export_bif
+from export_to_matlab import export_two_arr
 
 
 def bifurcation_a(func: MyFunction, x0, a0_max, a0, T1=200, T2=200):
@@ -33,7 +33,7 @@ def bifurcation_a(func: MyFunction, x0, a0_max, a0, T1=200, T2=200):
         # x0 = x_start
         a0 += 0.0001
         func.set_a0(a0)
-    export_bif(res_a_9, res_x0_9, "a_9", folder="bif")
+    export_two_arr(res_a_9, res_x0_9, "a_9", folder="bif")
 
     return res_a0, res_x0
 
